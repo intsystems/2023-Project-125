@@ -7,6 +7,16 @@
 ## Papers
 
 [Базовая Статья](./ЭпидемияДиплом.pdf)
+[О разрастании эпидемий](https://arxiv.org/pdf/cond-mat/0107267.pdf)
+
+## Textbooks
+
+[Лекции по случайным процессам](https://www.notion.so/PDF-ce809f4204ce4e80957e75718d94f67d)
+
+## Code
+
+[SIERS+](https://github.com/ryansmcgee/seirsplus)
+[Основной фреймворк](https://github.com/Zukhba/graph)
 
 [О разрастании эпидемий](https://arxiv.org/pdf/cond-mat/0107267.pdf)
 
