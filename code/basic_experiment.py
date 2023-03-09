@@ -69,12 +69,13 @@ for net_num in range(num_of_networks):
     beta_array = np.random.normal(2, 1, num_of_nodes[net_num])
     beta_array = np.array(list(map(fix_beta, beta_array)))
     beta_array = 1 / beta_array
-    ordinary_model = SEIRSNetworkModel(G=graphs[net_num], beta=beta_array, sigma=0.9, gamma=0.3, G_Q=graphs_quar[net_num],
-                                  transition_mode="time_in_state", initE=num_of_nodes[net_num] // 10,
+    ordinary_model = SEIRSNetworkModel(G=graphs[net_num], beta=beta_array, sigma=0.9, gamma=0.3,
+                                       G_Q=graphs_quar[net_num],
+                                       transition_mode="time_in_state", initE=num_of_nodes[net_num] // 10,
                                        isolation_time=isolation_t)
 
     # сэмплируем эпидемию до локдауна
-    #ordinary_model.run(T=10)
+    # ordinary_model.run(T=10)
     while (ordinary_model.t < 10):
         ordinary_model.run_iteration()
 
@@ -112,14 +113,13 @@ for net_num in range(num_of_networks):
     quar_infect_free = quar_model.numI
     quar_infect_isol = quar_model.numQ_I
 
-
     fig, axis = plt.subplots()
     axis.plot(ordinary_model.tseries[::2], quar_infect_free[::2], color='red', label='quarantine_free', alpha=0.6)
     axis.plot(ordinary_model.tseries[::2], quar_infect_isol[::2], color='pink', label='quarantine_isol', alpha=0.6)
     axis.plot(quar_model.tseries[::2], ord_infect[::2], color='blue', label='natural', alpha=0.6)
     # линия введения дня карантина
     axis.plot([time_start, time_start],
-              [-0.5,  0.5],
+              [-0.5, 0.5],
               label='lockdown_start', color='green', linewidth=2)
     axis.plot([time_finish, time_finish],
               [-0.5, 0.5],
