@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from models import *
+from SEIRS_lib.models import *
 from typing import List
 
 # make click on the given set of nodes
