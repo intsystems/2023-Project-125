@@ -61,7 +61,6 @@ class BasicEpidemic:
 class EpidemicWithLockdown(BasicEpidemic):
     """
         Эпидемия с локдауном и простым пересчётом вероятностей
-
     """
 
     def __init__(self, G: nx.Graph, ini_distr: List[int],
@@ -136,6 +135,9 @@ class EpidemicWithLockdown(BasicEpidemic):
 
             self.contact_graph[node_num]['state'] = node_state
 
+        # пересчитываем вероятности для согласованности
+        self.eval_probs()
+
     def set_ordinary(self) -> None:
         """
                 Метод переводит граф в стандартный режим.
@@ -153,6 +155,9 @@ class EpidemicWithLockdown(BasicEpidemic):
             node_state = node_num['state']
 
             self.contact_graph[node_num]['state'] = node_state
+
+        # пересчитываем вероятности для согласованности
+        self.eval_probs()
 
 
 
