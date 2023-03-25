@@ -143,6 +143,9 @@ class EpidemicWithLockdown(BasicEpidemic):
         self._G_copy = self.contact_graph.copy()
         self.eval_probs()
 
+        # пересчитываем вероятности для согласованности
+        self.eval_probs()
+
     def set_ordinary(self) -> None:
         """
                 Метод переводит граф в стандартный режим и пересчитывает вероятности

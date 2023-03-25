@@ -1,6 +1,7 @@
 import numpy as np
 from epidemic_model import *
 
+from epidemic_model import *
 
 class BasicSampler:
     """
