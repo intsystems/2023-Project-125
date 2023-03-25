@@ -1,6 +1,6 @@
 import numpy as np
-
 from epidemic_model import *
+
 
 class BasicSampler:
     """
@@ -17,7 +17,8 @@ class BasicSampler:
         # массив для хранения состояния вершин на каждой итерации
         self.node_states = []
 
-    def _next_state(self, cur_state: NodeStates) -> NodeStates:
+    @staticmethod
+    def _next_state(cur_state: NodeStates) -> NodeStates:
         """
         Возвращает следующее возможное состояние для вершины
 
@@ -76,6 +77,7 @@ class BasicSampler:
         """
         for i in range(t):
             self.make_one_step()
+
 
 class SamplerWithLockdown(BasicSampler):
     """

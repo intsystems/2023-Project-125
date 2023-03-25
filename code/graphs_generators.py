@@ -19,11 +19,18 @@ def random_working_graph(N: int, E_num: int) -> nx.Graph:
     # создаём все возможные рёбра
     all_edge_set = []
     for i in range(N):
-        for j in range(N):
+        for j in range(i, N):
             all_edge_set.append((i, j))
+
+    all_edge_set = np.array(all_edge_set)
     # выбираем E_num из них
-    edge_list = np.random.choice(all_edge_set, E_num)
+    edge_list = np.random.choice(np.arange(all_edge_set.shape[0]), E_num)
+    edge_list = all_edge_set[edge_list]
     G.add_edges_from(edge_list)
+
+    # добавляем рандомные веса интенсивностей [0, 1]
+    for edge in G.edges:
+        G.edges[edge]['w'] = np.random.rand(1)[0]
 
     return G
 
@@ -42,18 +49,27 @@ def random_home_graph(N: int, max_click_size = 5) -> nx.Graph:
     G.add_nodes_from([num for num in range(N)])
 
     # размер следующей клики
-    next_size = np.random.randint(1, max_click_size)
+    next_size = np.random.random_integers(low=1, high=max_click_size)
     # номер вершины, с которой будет начинаться следующая клика
     next_num = 0
     while N - next_size > 0:
         click = nx.complete_graph(range(next_num, next_num + next_size))
-        nx.compose(G, click)
+        G = nx.compose(G, click)
 
         next_num += next_size
+        N -= next_size
+        next_size = np.random.random_integers(1, max_click_size)
 
     click = nx.complete_graph(range(next_num, N))
-    nx.compose(G, click)
+    G = nx.compose(G, click)
+
+    # добавляем рандомные веса интенсивностей [0, 1]
+    for edge in G.edges:
+        G.edges[edge]['w'] = np.random.rand(1)[0]
 
     return G
 
-    
+
+# Tests
+# G = random_working_graph(5, 5)
+# G_h = random_home_graph(5, 2)

@@ -2,6 +2,7 @@ from epidemic_sampling import *
 import matplotlib.pyplot as plt
 from typing import Tuple
 
+
 class ViewEpidemic:
     """
     Класс базовой отрисовки хода эпидемии
@@ -31,7 +32,6 @@ class ViewEpidemic:
         ans = ans_ar.sum(axis=1) / node_type.value
 
         return ans
-
 
     def plot_numerical_dynamics(self, fig_size: Tuple[float, float]) -> plt.Figure:
         """
