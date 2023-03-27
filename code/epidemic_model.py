@@ -92,8 +92,10 @@ class EpidemicWithLockdown(BasicEpidemic):
             """
         if self.contact_graph.nodes[n]['state'] == NodeStates.Infected:
             self._G_copy.nodes[n]['prob'] = self.I_to_R_prob
+            self._G_copy.nodes[n]['state'] = NodeStates.Infected
         elif self.contact_graph.nodes[n]['state'] == NodeStates.Recovered:
             self._G_copy.nodes[n]['prob'] = self.R_to_S_prob
+            self._G_copy.nodes[n]['state'] = NodeStates.Recovered
         elif self.contact_graph.nodes[n]['state'] == NodeStates.Sucept:
             # берём индивидуальную восприимчивость
             personal_sucept = self.personal_suceptabilities[n]
@@ -110,6 +112,7 @@ class EpidemicWithLockdown(BasicEpidemic):
             cur_prob = 1 - cur_prob
 
             self._G_copy.nodes[n]['prob'] = cur_prob
+            self._G_copy.nodes[n]['state'] = NodeStates.Sucept
 
     def eval_probs(self) -> None:
         super().eval_probs()
@@ -143,9 +146,6 @@ class EpidemicWithLockdown(BasicEpidemic):
         self._G_copy = self.contact_graph.copy()
         self.eval_probs()
 
-        # пересчитываем вероятности для согласованности
-        self.eval_probs()
-
     def set_ordinary(self) -> None:
         """
                 Метод переводит граф в стандартный режим и пересчитывает вероятности
@@ -158,7 +158,7 @@ class EpidemicWithLockdown(BasicEpidemic):
 
         self.contact_graph = self.ordinary_contact_graph.copy()
         # переносим состояния вершин в новый граф
-        for node_num, node in self.ordinary_contact_graph.nodes.data():
+        for node_num, node in self.lockdown_contact_graph.nodes.data():
             node_state = node['state']
 
             self.contact_graph.nodes[node_num]['state'] = node_state
