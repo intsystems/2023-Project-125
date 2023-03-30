@@ -28,7 +28,7 @@ class BasicEpidemic:
         """
 
         :param G: граф контактов
-        :param ini_distr:  начальное распределение больных
+        :param init_distr:  начальное распределение больных
         """
         self.contact_graph = G
         self._ini_distr = init_distr
@@ -57,6 +57,12 @@ class BasicEpidemic:
         for vertex in self.contact_graph.nodes:
             self._eval_individ_prob(vertex)
 
+    def copy(self):
+        new_G = self.contact_graph.copy()
+        new_distr = self._ini_distr.copy()
+
+        return BasicEpidemic(new_G, new_distr)
+
 
 class EpidemicWithLockdown(BasicEpidemic):
     """
@@ -78,7 +84,7 @@ class EpidemicWithLockdown(BasicEpidemic):
         self.ordinary_contact_graph = G
         self.I_to_R_prob = sigma
         self.R_to_S_prob = xi
-        if beta is list:
+        if type(beta) is list:
             self.personal_suceptabilities = beta
         else:
             self.personal_suceptabilities = [beta for i in range(len(G.nodes))]
@@ -113,6 +119,16 @@ class EpidemicWithLockdown(BasicEpidemic):
 
             self._G_copy.nodes[n]['prob'] = cur_prob
             self._G_copy.nodes[n]['state'] = NodeStates.Sucept
+
+    def copy(self):
+        new_G = self.ordinary_contact_graph.copy()
+        new_G_home = self.lockdown_contact_graph.copy()
+        new_distr = self._ini_distr.copy()
+        new_contact_graph = self.contact_graph.copy()
+        new_beta = self.personal_suceptabilities.copy()
+
+        return EpidemicWithLockdown(new_contact_graph, new_distr, new_G_home, self.I_to_R_prob,
+                                    self.I_to_R_prob, new_beta)
 
     def eval_probs(self) -> None:
         super().eval_probs()
