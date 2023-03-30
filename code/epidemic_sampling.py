@@ -1,3 +1,8 @@
+"""
+    В модуле описываются классы, проводящие итерирование эпидемий во времени с сохранением характеристик
+     эпидемии при её протекании.
+"""
+
 import numpy as np
 from epidemic_model import *
 
@@ -69,6 +74,15 @@ class BasicSampler:
             node_number = node[0]
             self.node_states[cur_stage][node_number] = node_info['state'].value
 
+    def copy(self):
+        new_epidemic = self.epidemic.copy()
+        node_states = self.node_states.copy()
+
+        new_obj = BasicSampler(new_epidemic)
+        new_obj.node_states = node_states
+
+        return new_obj
+
     def make_one_step(self):
         """
         Метод делает шаг сэмлирования и сохраняет состояния вершин
@@ -138,6 +152,69 @@ class SamplerWithLockdown(BasicSampler):
             super()._make_iteration()
             cur_epidemic.set_ordinary()
 
+    def copy(self) -> 'SamplerWithLockdown':
+        """
+
+        :return:
+        """
+
+        new_epidemic = self.epidemic.copy()
+        lockdown_days = self.lockdown_days.copy()
+        lockdown_days = list(map(lambda x: x + 1, lockdown_days))
+        node_states = self.node_states.copy()
+
+        new_obj = SamplerWithLockdown(new_epidemic, lockdown_days)
+        new_obj.node_states = node_states
+
+        return new_obj
+
+
+class ComparasionSampler:
+    """
+    Сэмплер, хранящий внутри себя две версии эпидемии: с локдауном и без.
+    До дня локдауна эпидемии совпадают. После же эпидемии эволюционируют независимо: одна с локдауном
+    другая без.
+    """
+    def __init__(self, lockdown_sampler: SamplerWithLockdown):
+        # два сэмплера изначально ссылаются на одно и то же
+        self.lockdown_sampler = lockdown_sampler
+        self.no_lockdown_sampler = lockdown_sampler
+        # день, когда сэмплеры разделяться
+        self._independance_day = lockdown_sampler.lockdown_days[0]
+        # счётчик дней
+        self.cur_day = 0
+
+    def make_one_step(self):
+        """
+        Делает один шаг для каждого сэмплера
+
+        :return:
+        """
+        # момент разделения
+        if self.cur_day == self._independance_day:
+            self.no_lockdown_sampler = self.lockdown_sampler.copy()
+            # снимаем эпидемию для no_lockdown
+            self.no_lockdown_sampler.lockdown_days = [-1, -1]
+
+        if self.cur_day < self._independance_day:
+            self.lockdown_sampler.make_one_step()
+        else:
+            self.lockdown_sampler.make_one_step()
+            self.no_lockdown_sampler.make_one_step()
+
+        self.cur_day += 1
+
+    def run(self, t: int):
+        """
+        Итерируеся t раз
+
+        :param t: кол-во итераций
+        :return:
+        """
+        for i in range(t):
+            self.make_one_step()
+
+
 
 # # Tests
 # import graphs_generators as gr_gen
@@ -152,3 +229,5 @@ class SamplerWithLockdown(BasicSampler):
 # epidemic_sampler = SamplerWithLockdown(epidemic, (2, 3))
 # epidemic_sampler.make_one_step()
 # epidemic_sampler.make_one_step()
+
+
