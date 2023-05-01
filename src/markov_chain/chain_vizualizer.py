@@ -25,6 +25,7 @@ class ChainVisualizer:
         vmin_edges = 0
         vmax_edges = 100
         node_size = 600
+        line_width_node = 3
 
         # формируем массив цветов для рёбер
         edge_colors = []
@@ -36,7 +37,7 @@ class ChainVisualizer:
 
         edges_viz = nx.draw_networkx_edges(self.chain.chain, ax=ax, pos=nx.drawing.circular_layout(self.chain.chain),
                                            edge_color=edge_colors, edge_cmap=edge_colormap, edge_vmin=vmin_edges,
-                                           edge_vmax=vmax_edges, node_size=node_size)
+                                           edge_vmax=vmax_edges, node_size=node_size + line_width_node)
 
         return edges_viz
 
@@ -86,9 +87,25 @@ class ChainVisualizer:
         """
 
         # создаём холст и отрисовку рёбер (она не меняется)
-        fig, ax = plt.subplots(figsize=(15, 15))
+        fig, ax = plt.subplots(figsize=(15, 10))
         edge_viz = self.draw_edges(ax)
         node_viz = self.draw_nodes(ax)
+
+        # добавим colorbar для вершин
+        norm_1 = mpl.colors.Normalize(vmin=-1, vmax=1)
+        cmap_1 = mpl.colormaps['RdYlGn']
+        fig.colorbar(mpl.cm.ScalarMappable(norm=norm_1, cmap=cmap_1), ax=ax, fraction=0.05, orientation='vertical', label='I-S')
+
+        # добавим colorbar для границ вершин
+        norm_2 = mpl.colors.Normalize(vmin=0, vmax=1)
+        cmap_2 = mpl.colormaps['BuPu']
+        fig.colorbar(mpl.cm.ScalarMappable(norm=norm_2, cmap=cmap_2), ax=ax, fraction=0.05, orientation='vertical', label='R (node edge color)')
+
+        # добавим colorbar для рёбер
+        norm_3 = mpl.colors.Normalize(vmin=0, vmax=1)
+        cmap_3 = mpl.colormaps['cool']
+        fig.colorbar(mpl.cm.ScalarMappable(norm=norm_3, cmap=cmap_3), ax=ax, fraction=0.05, 
+                    location='left', orientation='vertical', label='Edges')
 
         # делаем шаги по времени
         def update(frame):
@@ -102,7 +119,7 @@ class ChainVisualizer:
         # объект анимации
         ani = animation.FuncAnimation(fig=fig, func=update, frames=time, interval=70, repeat=True)
         ani.save(filename=r'D:\6 sem\IS Lockdown\2023-Project-125\figs\markov_visualization.gif',
-                 writer='pillow', fps=5)
-        plt.show()
+                 writer='pillow', fps=4)
+        # plt.show()
 
 

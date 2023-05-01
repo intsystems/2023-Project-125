@@ -1,16 +1,18 @@
 # Tests
+from typing import Type
 import pytest
+from pytest import FixtureRequest
 from src.markov_chain.markov_chain import MarkovChain
 from src.markov_chain.markov_chain import NodeStates
 from src.graphs_generators import *
 
 
 @pytest.fixture()
-def greeting_fixt(request):
+def greeting_fixt(request: Type[FixtureRequest]):
     print("Diving into test for one init")
 
 @pytest.fixture()
-def chain_creation(request):
+def chain_creation(request: Type[FixtureRequest]):
     # граф эпидемии
     graph = random_working_graph(5, 5)
     # делаем начальное распределение
@@ -22,7 +24,7 @@ def chain_creation(request):
     return chain
 
 
-def test_init_chain(greeting_fixt):
+def test_init_chain(greeting_fixt: None):
     # граф эпидемии
     graph = random_working_graph(5, 5)
     # делаем начальное распределение
@@ -48,7 +50,27 @@ def test_one_step():
 
     chain.time_step()
 
-def test_expected_value(chain_creation):
+
+def test_several_steps():
+    # время симулирования эпидемии
+    T = 500
+    # граф эпидемии
+    graph = random_working_graph(5, 5)
+    # делаем начальное распределение
+    init_distr = np.random.rand(5, 3)
+    init_distr = init_distr / np.sum(init_distr, axis=1).reshape(5, 1)
+
+    chain = MarkovChain(graph, init_distr, epidemic_par=[0.3, 0.3, 0.3])
+
+    # наблюдаем за одной вершиной
+    for i in range(T):
+        if i % 50 == 0:
+            print(f"Distribution on step {i} is {chain.chain.nodes[0]}\n")
+
+        chain.time_step()
+
+
+def test_expected_value(chain_creation: MarkovChain):
     """
     Тест рассчёта среднего кол-ва вершин того или иного типа
     """

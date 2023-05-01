@@ -57,7 +57,7 @@ class MarkovChain:
             neigb_nums = list(self.chain.adj[node_num])
 
             for neigb_num in neigb_nums:
-                # вес ребра
+                # вес ребра 
                 cur_weight = self.chain[node_num][neigb_num]['w']
                 # P(neigb_num) in I
                 cur_prob_I = verts[neigb_num][1]
@@ -87,15 +87,15 @@ class MarkovChain:
         Метод для подсчёта матожидания кол-ва узлов типа state
 
         :param state: для какого состояние считать матожидание
-        :return:
+        :return: матожидание выбранного состояния
         """
         # переводим enum в int
-        node_state = state.value
+        node_state: int = state.value
         ans: float = 0
         for node_data in self.chain.nodes.data():
             # вытаскиваем аттрибуты вершины
             node_attrs = node_data[1]
-            ans += node_attrs[node_state]
+            ans += 1 * node_attrs[node_state]
 
         return ans
 

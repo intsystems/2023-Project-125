@@ -13,12 +13,12 @@ import matplotlib.animation as animation
 @pytest.fixture()
 def chain_creation(request):
     # граф эпидемии
-    graph = random_working_graph(5, 5)
+    graph = random_working_graph(6, 9)
     # делаем начальное распределение
-    init_distr = np.random.rand(5, 3)
-    init_distr = init_distr / np.sum(init_distr, axis=1).reshape(5, 1)
+    init_distr = np.random.rand(6, 3)
+    init_distr = init_distr / np.sum(init_distr, axis=1).reshape(6, 1)
 
-    chain = MarkovChain(graph, init_distr, epidemic_par=[0.3, 0.3, 0.8])
+    chain = MarkovChain(graph, init_distr, epidemic_par=[0.3, 0.3, 0.5])
 
     return chain
 
