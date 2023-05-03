@@ -23,8 +23,21 @@ def chain_creation(request):
     return chain
 
 
-def test_viz_one_frame(chain_creation):
-    chain: MarkovChain = chain_creation
+@pytest.fixture()
+def chain_creation_all_sick(request):
+    # граф эпидемии
+    graph = random_working_graph(6, 9)
+    # делаем начальное распределение
+    init_distr = np.array([0.0, 1.0, 0.0])
+    init_distr = np.ones((6, 3)) * init_distr
+
+    chain = MarkovChain(graph, init_distr, epidemic_par=[0.3, 0.3, 0.5])
+
+    return chain
+
+
+def test_viz_one_frame(chain_creation_all_sick):
+    chain: MarkovChain = chain_creation_all_sick
 
     chain_viz = ChainVisualizer(chain)
 

@@ -52,20 +52,43 @@ def test_one_step():
 
 
 def test_several_steps():
-    # время симулирования эпидемии
+    """
+        Тест показывает, что происходит потеря точности при рассчёте вероятностного распределения в вершинах
+    """
+
     T = 500
     # граф эпидемии
-    graph = random_working_graph(5, 5)
+    graph = random_working_graph(6, 9)
     # делаем начальное распределение
-    init_distr = np.random.rand(5, 3)
-    init_distr = init_distr / np.sum(init_distr, axis=1).reshape(5, 1)
+    init_distr = np.array([0.0, 0.5, 0.5])
+    init_distr = np.ones((6, 3)) * init_distr
 
-    chain = MarkovChain(graph, init_distr, epidemic_par=[0.3, 0.3, 0.3])
+    chain = MarkovChain(graph, init_distr, epidemic_par=[0.3, 0.3, 0.5])
+
+    # наблюдаем за одной вершиной
+    for i in range(T):
+        if i % 50 == 0:
+            # сумма вероятностей в распределении
+            distr_sum = np.sum(list(chain.chain.nodes[0].values()))
+            print(f"Distribution on step {i} is {chain.chain.nodes[0]}\n Sum of distr is {distr_sum}\n")
+
+        chain.time_step()
+
+def test_all_healthy_at_start():
+    T = 500
+    # граф эпидемии
+    graph = random_working_graph(6, 9)
+    # делаем начальное распределение
+    init_distr = np.array([1.0, 0.0, 0.0])
+    init_distr = np.ones((6, 3)) * init_distr
+
+    chain = MarkovChain(graph, init_distr, epidemic_par=[0.3, 0.3, 0.5])
 
     # наблюдаем за одной вершиной
     for i in range(T):
         if i % 50 == 0:
             print(f"Distribution on step {i} is {chain.chain.nodes[0]}\n")
+            assert list(chain.chain.nodes[0].values()) == [1.0, 0.0, 0.0]
 
         chain.time_step()
 

@@ -44,7 +44,9 @@ class MarkovChain:
         :return:
         """
         # сохраняем все данные по вершинам
-        verts = dict(self.chain.nodes.data()).copy()
+        verts = {}
+        for node, node_attrs in self.chain.nodes.data():
+            verts[node] = node_attrs.copy()
         # параметры эпидемии
         beta = self.params[2]
         gamma = self.params[0]
@@ -70,6 +72,7 @@ class MarkovChain:
             self.chain.nodes[node_num][1] = (1 - sigma) * verts[node_num][1] + verts[node_num][0] * (1 - A_v)
             # для вероятности быть в R
             self.chain.nodes[node_num][2] = sigma * verts[node_num][1] + (1 - gamma) * verts[node_num][2]
+
 
     def set_init(self):
         """
