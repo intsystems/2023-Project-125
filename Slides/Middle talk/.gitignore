@@ -8,8 +8,6 @@
 *.bcf
 *.snm
 *.toc
-*.nav
-*.docx
 docs/Talk.txt
 docs/OneSlideTalk/
 .idea/
