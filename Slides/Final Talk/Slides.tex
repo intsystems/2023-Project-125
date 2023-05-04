@@ -153,8 +153,10 @@
 			\end{frame}
 
 	\begin{frame}{Теоретическая часть}
+		Работаем только с этой рекуррентой:
+		
 		\begin{equation*}
-			\prob(v \in I_{t+1}) = (1 - \sigma) \prob(v \in I_t) + \prob(v \in S_t) \cdot \beta \sum\limits_{u \in N(v)} w_{uv} \prob(u \in I_t)
+			\prob(v \in I_{t+1}) = (1 - \sigma) \prob(v \in I_t) + \beta \sum\limits_{u \in N(v)} w_{uv} \prob(u \in I_t)
 		\end{equation*}
 	
 	Ищем решение в виде: $ \mathbf{P} = \mathbf{e} \cdot q^n$, где $\mathbf{e}$ --- некоторый вектор. В итоге всё сведётся к решению СЛАУ:
