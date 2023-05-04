@@ -1,0 +1,15 @@
+*.aux
+*.bbl
+*.blg
+*.log
+*.out
+*.gz
+*.xml
+*.bcf
+docs/Talk.txt
+docs/OneSlideTalk/
+.idea/
+src/.idea/
+*__pycache__*
+*.nb
+*.vscode
